@@ -148,3 +148,43 @@ body.sidebar-open .sidebar-toggle-btn {
     left: 12px;
   }
 }
+
+/* Modal overlay and dialog */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6); /* slate-900 with opacity */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+  backdrop-filter: blur(4px);
+  transition: opacity 180ms ease;
+}
+
+.modal-dialog {
+  width: 100%;
+  max-width: 720px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(2,6,23,0.6);
+  padding: 1.25rem;
+  transform: translateY(8px);
+  transition: transform 180ms ease, opacity 180ms ease;
+}
+
+.modal-header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:12px;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  font-size: 1rem;
+  color: #64748b; /* gray-500 */
+  cursor: pointer;
+}
