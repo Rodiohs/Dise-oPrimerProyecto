@@ -30,7 +30,7 @@ export default function BudgetsPage() {
     setBudgets(budgets.filter(b => b.id !== id));
   }
 
-  // compute spent for a budget by summing transactions whose tags include the budget.tag
+  // compute spent for a budget by summing transactions whose tags include the budget's tag
   function computeSpent(budget) {
     return transactions
       .filter(t => (t.tags || []).includes(budget.tag))
@@ -41,7 +41,7 @@ export default function BudgetsPage() {
     <div>
       <header className="mb-4">
         <h1 className="text-2xl font-semibold">Budgets</h1>
-        <p className="text-sm text-gray-600">Create budgets that track expenses by tag.</p>
+        <p className="text-sm muted">Create budgets that track expenses by tag.</p>
       </header>
 
       <div className="card mb-6">
@@ -51,14 +51,14 @@ export default function BudgetsPage() {
           <input className="form-input border rounded p-2" placeholder="Limit (amount)" type="number" value={form.limit} onChange={e=>setForm({...form, limit:e.target.value})} />
           <input className="form-input border rounded p-2" placeholder="Tag to track (exact)" value={form.tag} onChange={e=>setForm({...form, tag:e.target.value})} />
           <div className="md:col-span-3 flex gap-2 mt-2">
-            <button className="bg-indigo-600 text-white px-4 py-2 rounded" type="submit">Add Budget</button>
+            <button className="btn-primary px-4 py-2 rounded" type="submit">Add Budget</button>
             <button type="button" className="bg-gray-200 px-4 py-2 rounded" onClick={()=>{ setBudgets([]); localStorage.removeItem(BUDGET_KEY); }}>Clear budgets</button>
           </div>
         </form>
       </div>
 
       <div className="space-y-4">
-        {budgets.length === 0 && <div className="text-sm text-gray-500">No budgets yet. Create one above.</div>}
+        {budgets.length === 0 && <div className="text-sm muted">No budgets yet. Create one above.</div>}
         {budgets.map(b => {
           const spent = computeSpent(b);
           const progress = Math.min(100, (spent / Math.max(1, b.limit)) * 100);
@@ -69,11 +69,11 @@ export default function BudgetsPage() {
               <div className="flex justify-between items-start gap-4">
                 <div>
                   <div className="font-medium text-lg">{b.name}</div>
-                  <div className="text-sm text-gray-500">Tag: <span className="font-medium">{b.tag}</span></div>
+                  <div className="text-sm muted">Tag: <span className="font-medium">{b.tag}</span></div>
                 </div>
 
                 <div className="text-right">
-                  <div className="text-sm text-gray-500">Limit</div>
+                  <div className="text-sm muted">Limit</div>
                   <div className="font-semibold">{b.limit.toFixed(2)} ₡</div>
                 </div>
               </div>
@@ -96,7 +96,7 @@ export default function BudgetsPage() {
                   />
                 </div>
 
-                <div className="flex justify-between mt-2 text-xs text-gray-500">
+                <div className="flex justify-between mt-2 text-xs muted">
                   <div>{Math.round(progress)}%</div>
                   <div><button className="text-sm text-red-600" onClick={()=>removeBudget(b.id)}>Remove</button></div>
                 </div>

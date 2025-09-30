@@ -1,15 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 
-/**
- * Shows:
- * - All expenses
- * - All incomes
- * - Expenses per tag
- * - Incomes per tag
- * - Expenses per date
- * - Incomes per date
- */
-
 function formatAmount(n) {
   return `${n.toFixed(2)} ₡`;
 }
@@ -86,11 +76,11 @@ export default function Summary() {
         <div className="card">
           <div className="flex justify-between items-center">
             <div>
-              <div className="text-xs text-gray-500">Total incomes</div>
+              <div className="text-xs muted">Total incomes</div>
               <div className="font-semibold text-green-600">{formatAmount(totalIncomes)}</div>
             </div>
             <div>
-              <div className="text-xs text-gray-500">Total expenses</div>
+              <div className="text-xs muted">Total expenses</div>
               <div className="font-semibold text-red-600">{formatAmount(totalExpenses)}</div>
             </div>
           </div>
@@ -98,7 +88,7 @@ export default function Summary() {
 
         <div className="card">
           <div className="font-medium mb-2">Expenses per tag</div>
-          {sortedEntries(expensesByTag).length === 0 && <div className="text-sm text-gray-500">No data</div>}
+          {sortedEntries(expensesByTag).length === 0 && <div className="text-sm muted">No data</div>}
           <ul>
             {sortedEntries(expensesByTag).map(([tag, amt]) => (
               <li key={tag} className="flex justify-between py-1">
@@ -111,7 +101,7 @@ export default function Summary() {
 
         <div className="card">
           <div className="font-medium mb-2">Incomes per tag</div>
-          {sortedEntries(incomesByTag).length === 0 && <div className="text-sm text-gray-500">No data</div>}
+          {sortedEntries(incomesByTag).length === 0 && <div className="text-sm muted">No data</div>}
           <ul>
             {sortedEntries(incomesByTag).map(([tag, amt]) => (
               <li key={tag} className="flex justify-between py-1">
@@ -124,7 +114,7 @@ export default function Summary() {
 
         <div className="card">
           <div className="font-medium mb-2">Expenses by date</div>
-          {sortedEntries(expensesByDate).length === 0 && <div className="text-sm text-gray-500">No data</div>}
+          {sortedEntries(expensesByDate).length === 0 && <div className="text-sm muted">No data</div>}
           <ul>
             {sortedEntries(expensesByDate).map(([date, amt]) => (
               <li key={date} className="flex justify-between py-1">
@@ -137,7 +127,7 @@ export default function Summary() {
 
         <div className="card">
           <div className="font-medium mb-2">Incomes by date</div>
-          {sortedEntries(incomesByDate).length === 0 && <div className="text-sm text-gray-500">No data</div>}
+          {sortedEntries(incomesByDate).length === 0 && <div className="text-sm muted">No data</div>}
           <ul>
             {sortedEntries(incomesByDate).map(([date, amt]) => (
               <li key={date} className="flex justify-between py-1">
@@ -150,11 +140,11 @@ export default function Summary() {
 
         <div className="card">
           <div className="font-medium mb-2">All expenses (latest)</div>
-          {allExpenses.length === 0 && <div className="text-sm text-gray-500">No expenses yet</div>}
+          {allExpenses.length === 0 && <div className="text-sm muted">No expenses yet</div>}
           <ul>
             {allExpenses.slice(0,6).map(t => (
               <li key={t.id} className="flex justify-between py-1">
-                <div className="text-sm">{t.desc} <div className="text-xs text-gray-400">{t.tags?.join(", ")}</div></div>
+                <div className="text-sm">{t.desc} <div className="text-xs muted">{t.tags?.join(", ")}</div></div>
                 <div className="text-red-600">{formatAmount(t.amount)}</div>
               </li>
             ))}
@@ -163,11 +153,11 @@ export default function Summary() {
 
         <div className="card">
           <div className="font-medium mb-2">All incomes (latest)</div>
-          {allIncomes.length === 0 && <div className="text-sm text-gray-500">No incomes yet</div>}
+          {allIncomes.length === 0 && <div className="text-sm muted">No incomes yet</div>}
           <ul>
             {allIncomes.slice(0,6).map(t => (
               <li key={t.id} className="flex justify-between py-1">
-                <div className="text-sm">{t.desc} <div className="text-xs text-gray-400">{t.tags?.join(", ")}</div></div>
+                <div className="text-sm">{t.desc} <div className="text-xs muted">{t.tags?.join(", ")}</div></div>
                 <div className="text-green-600">{formatAmount(t.amount)}</div>
               </li>
             ))}

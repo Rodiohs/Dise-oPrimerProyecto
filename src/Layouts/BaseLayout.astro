@@ -1,5 +1,4 @@
 ---
-/* frontmatter: imports and props go here */
 import Sidebar from "../components/React/Sidebar.jsx";
 const { title = "Finance App" } = Astro.props;
 ---
@@ -12,15 +11,14 @@ const { title = "Finance App" } = Astro.props;
     <link rel="stylesheet" href="/src/styles/global.css" />
   </head>
   <body class="min-h-screen">
-    <!-- Mount the Sidebar React component client-side -->
     <Sidebar client:load />
 
     <main class="container py-8">
       <slot />
     </main>
 
-    <footer class="bg-white border-t">
-      <div class="container py-4 text-sm text-gray-500">
+    <footer class="border-t theme-transition"> <!-- removed bg-white -->
+      <div class="container py-4 text-sm muted">
         <span>Proyecto: Aplicación financiera personal — Proyecto 1</span>
       </div>
     </footer>

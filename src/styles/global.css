@@ -1,70 +1,222 @@
 @import "tailwindcss";
 @tailwind utilities;
 
-/* Base overrides and variables */
-@layer base {
-  :root {
-    --app-max-w: 1100px;
-  }
+:root {
+  /* Primary (blue-ish) */
+  --color-primary-r: 59;  --color-primary-g: 130; --color-primary-b: 246;
+  /* Accent (orange) */
+  --color-accent-r: 249;  --color-accent-g: 115; --color-accent-b: 22;
 
+  /* Surface / background / text */
+  --bg-r: 249;  --bg-g: 250; --bg-b: 251;    /* gray-50 */
+  --card-r: 255; --card-g: 255; --card-b: 255; /* white */
+  --text-r: 17;  --text-g: 24;  --text-b: 39;  /* gray-900 */
+  --muted-r: 100; --muted-g: 116; --muted-b: 139;
+
+  --btn-border-r: 203; --btn-border-g: 213; --btn-border-b: 225; /* slate-300 */
+  --input-bg-r: 255; --input-bg-g: 255; --input-bg-b: 255; /* white */
+  --input-border-r: 209; --input-border-g: 213; --input-border-b: 219; /* gray-300 */
+  --input-text-r: 17; --input-text-g: 24; --input-text-b: 39; /* gray-900 */
+
+  --selected-card-bg-r: 224; --selected-card-bg-g: 242; --selected-card-bg-b: 254; /* light blue */
+  --selected-card-border-r: 59; --selected-card-border-g: 130; --selected-card-border-b: 246; /* primary blue */
+
+
+  --motion-duration: 360ms;
+  --motion-ease: cubic-bezier(.2,.9,.2,1);
+}
+
+/* DARK theme variables (applied with :root.dark) */
+:root.dark {
+  /* Primary becomes dark blue */
+  --color-primary-r: 10;  --color-primary-g: 63;  --color-primary-b: 100;
+  /* Accent remains orange */
+  --color-accent-r: 249;  --color-accent-g: 115; --color-accent-b: 22;
+
+  /* Dark navy / surface / text */
+  --bg-r: 3;   --bg-g: 7;   --bg-b: 18;   /* very dark navy */
+  --card-r: 10; --card-g: 15; --card-b: 30;  /* slightly lighter card */
+  --text-r: 226; --text-g: 232; --text-b: 240; /* light text */
+  --muted-r: 148; --muted-g: 163; --muted-b: 184;
+
+  --btn-border-r: 45; --btn-border-g: 62; --btn-border-b: 77; /* slate-700 like */
+  --input-bg-r: 15; --input-bg-g: 23; --input-bg-b: 42; /* slate-900 */
+  --input-border-r: 30; --input-border-g: 41; --input-border-b: 59; /* slate-800 */
+  --input-text-r: 226; --input-text-g: 232; --input-text-b: 240; /* light text */
+
+  --selected-card-bg-r: 17; --selected-card-bg-g: 24; --selected-card-bg-b: 39; /* dark gray */
+  --selected-card-border-r: 147; --selected-card-border-g: 197; --selected-card-border-b: 253; /* light blue-ish */
+}
+
+/* Derived variables for convenience (CSS var strings) */
+:root, :root.dark {
+  --bg: rgb(var(--bg-r) var(--bg-g) var(--bg-b));
+  --card-bg: rgb(var(--card-r) var(--card-g) var(--card-b));
+  --text-color: rgb(var(--text-r) var(--text-g) var(--text-b));
+  --muted: rgb(var(--muted-r) var(--muted-g) var(--muted-b));
+  --primary: rgb(var(--color-primary-r) var(--color-primary-g) var(--color-primary-b));
+  --accent: rgb(var(--color-accent-r) var(--color-accent-g) var(--color-accent-b));
+  --btn-border: rgb(var(--btn-border-r) var(--btn-border-g) var(--btn-border-b));
+  --input-bg: rgb(var(--input-bg-r) var(--input-bg-g) var(--input-bg-b));
+  --input-border: rgb(var(--input-border-r) var(--input-border-g) var(--input-border-b));
+  --input-text: rgb(var(--input-text-r) var(--input-text-g) var(--input-text-b));
+  --selected-card-bg: rgb(var(--selected-card-bg-r) var(--selected-card-bg-g) var(--selected-card-bg-b));
+  --selected-card-border: rgb(var(--selected-card-border-r) var(--selected-card-border-g) var(--selected-card-border-b));
+}
+
+/* ===========================
+   THEME TRANSITION / ANIMATION
+   =========================== */
+@keyframes theme-fade-in {
+  from { opacity: 0; transform: scale(0.995); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+body.theme-animating::after {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.02));
+  animation: theme-fade-in var(--motion-duration) var(--motion-ease) forwards;
+  z-index: 9998;
+}
+
+/* ===========================
+   BASE LAYOUT / UTILITY HELPERS
+   =========================== */
+@layer base {
   html, body, #root {
     height: 100%;
   }
 
   body {
-    @apply bg-gray-50 text-gray-800 antialiased;
-    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
-      Roboto, "Helvetica Neue", Arial;
+    background: var(--bg);
+    color: var(--text-color);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color var(--motion-duration) var(--motion-ease),
+                color var(--motion-duration) var(--motion-ease);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+      "Helvetica Neue", Arial;
+  }
+
+  /* Card helper uses card-bg variable */
+  .card {
+    background: var(--card-bg);
+    color: var(--text-color);
+    border-radius: 0.5rem;
+    box-shadow: 0 6px 18px rgba(2,6,23,0.06);
+    padding: 1rem;
+    border: 1px solid transparent; /* default transparent border */
+    cursor: default; /* default cursor */
+    transition: background-color var(--motion-duration) var(--motion-ease),
+                color var(--motion-duration) var(--motion-ease),
+                box-shadow calc(var(--motion-duration)/1.4) var(--motion-ease),
+                border-color var(--motion-duration) var(--motion-ease);
+  }
+
+  /* Style for selected cards */
+  .card.selectable:hover {
+    box-shadow: 0 8px 24px rgba(2,6,23,0.1); /* slight lift on hover */
+  }
+
+  .card.selectable.selected-card {
+    background: var(--selected-card-bg);
+    border-color: var(--selected-card-border);
+    box-shadow: 0 8px 24px rgba(2,6,23,0.15);
+  }
+
+
+  .container {
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  /* Buttons that follow theme */
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+    border: 1px solid var(--btn-border);
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.875rem;
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    transition: background-color var(--motion-duration) var(--motion-ease),
+                border-color var(--motion-duration) var(--motion-ease);
+  }
+
+  .btn-accent {
+    background: var(--accent);
+    color: white;
+    border: 1px solid var(--btn-border);
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.875rem;
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    transition: background-color var(--motion-duration) var(--motion-ease),
+                border-color var(--motion-duration) var(--motion-ease);
+  }
+
+  .muted {
+    color: var(--muted);
   }
 }
 
-/* Small component utilities */
+/* ===========================
+   FORM INPUT STYLES (for forms plugin)
+   =========================== */
 @layer components {
+  .form-input,
+  .form-textarea,
+  .form-select {
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    border-color: var(--input-border);
+    &::placeholder {
+      color: var(--muted);
+      opacity: 0.7;
+    }
+    transition: background-color var(--motion-duration) var(--motion-ease),
+                color var(--motion-duration) var(--motion-ease),
+                border-color var(--motion-duration) var(--motion-ease);
+  }
+
+  .form-select {
+    /* To ensure the default dropdown arrow is also theme-aware,
+       we might need to override the background-image SVG directly.
+       However, often just setting 'color' affects the SVG's fill. */
+    color: var(--input-text); /* Ensure selected option text is visible */
+  }
+
   .container {
     @apply mx-auto px-4;
-    max-width: var(--app-max-w);
-  }
-
-  /* plugin-friendly form defaults (works with @tailwindcss/forms) */
-  .form-row {
-    @apply grid gap-2 md:grid-cols-4;
-  }
-
-  .card {
-    @apply bg-white rounded shadow p-4;
+    max-width: 1100px;
   }
 }
 
-/* Sidebar layout variables and transitions */
+/* General property transitions for smooth theme change */
+* {
+  transition: background-color 200ms var(--motion-ease),
+              color 200ms var(--motion-ease),
+              border-color 180ms var(--motion-ease),
+              box-shadow 220ms var(--motion-ease);
+}
+
+
+/* ===========================
+   SIDEBAR & TOGGLE
+   =========================== */
 :root {
   --sidebar-width: 260px;
   --sidebar-collapsed-width: 64px;
-  --sidebar-transition: 250ms cubic-bezier(.2,.9,.2,1);
 }
 
-/* When the sidebar is open we add a class to body: .sidebar-open */
-body {
-  transition: padding-left var(--sidebar-transition);
-}
-
-/* Desktop layout: sidebar fixed on left */
-@media (min-width: 768px) {
-  body.sidebar-open {
-    padding-left: var(--sidebar-width);
-  }
-  body:not(.sidebar-open) {
-    padding-left: var(--sidebar-collapsed-width);
-  }
-}
-
-/* Mobile: overlay sidebar, not shifting body */
-@media (max-width: 767px) {
-  body {
-    padding-left: 0;
-  }
-}
-
-/* Sidebar base styles: we mount the sidebar as a fixed element */
 .app-sidebar {
   position: fixed;
   left: 0;
@@ -72,27 +224,25 @@ body {
   bottom: 0;
   width: var(--sidebar-width);
   transform: translateX(calc(-100% + var(--sidebar-width)));
-  transition: transform var(--sidebar-transition);
+  transition: transform var(--motion-duration) var(--motion-ease);
   z-index: 40;
-  background-color: #0f172a; /* slate-900 */
-  color: #fff;
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  color: var(--text-color);
   display: flex;
   flex-direction: column;
   gap: 8px;
   padding: 1rem 0.5rem;
+  backdrop-filter: blur(6px);
 }
 
-/* collapsed state: move sidebar left except collapsed handle width */
 body:not(.sidebar-open) .app-sidebar {
   transform: translateX(calc(-100% + var(--sidebar-collapsed-width)));
 }
 
-/* Mobile open (we add class .mobile-open) - full overlay */
-.app-sidebar.mobile-open {
+body.sidebar-open .app-sidebar {
   transform: translateX(0);
 }
 
-/* Sidebar inner items */
 .app-sidebar .brand {
   display: flex;
   align-items: center;
@@ -105,13 +255,13 @@ body:not(.sidebar-open) .app-sidebar {
   gap: 0.75rem;
   padding: 0.5rem 0.5rem;
   border-radius: 0.375rem;
-  color: #c7d2fe; /* indigo-200 */
+  color: var(--muted);
   text-decoration: none;
   font-size: 0.95rem;
 }
 .app-sidebar .nav-link:hover {
-  background: rgba(255,255,255,0.04);
-  color: #fff;
+  background: rgba(255,255,255,0.03);
+  color: var(--text-color);
 }
 .app-sidebar .nav-link .icon {
   width: 1.25rem;
@@ -119,58 +269,49 @@ body:not(.sidebar-open) .app-sidebar {
   justify-content: center;
 }
 
-/* Toggle button (handle) fixed on top-left of content */
 .sidebar-toggle-btn {
   position: fixed;
   left: var(--sidebar-collapsed-width);
   top: 12px;
   z-index: 50;
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 42px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
-  background: white;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-  transition: left var(--sidebar-transition), transform var(--sidebar-transition);
+  border-radius: 10px;
+  background: var(--card-bg);
+  color: var(--text-color);
+  box-shadow: 0 6px 18px rgba(2,6,23,0.06);
+  transition: left var(--motion-duration) var(--motion-ease), transform var(--motion-duration) var(--motion-ease);
 }
-
-/* when open shift left button with sidebar width */
 body.sidebar-open .sidebar-toggle-btn {
   left: calc(var(--sidebar-width) + 12px);
   transform: translateX(-12px);
 }
 
-/* Mobile position */
-@media (max-width: 767px) {
-  .sidebar-toggle-btn {
-    left: 12px;
-  }
-}
-
-/* Modal overlay and dialog */
+/* ===========================
+   MODAL
+   =========================== */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.6); /* slate-900 with opacity */
+  background: rgba(3,7,18,0.6);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 60;
   backdrop-filter: blur(4px);
-  transition: opacity 180ms ease;
+  animation: theme-fade-in 220ms var(--motion-ease);
 }
 
 .modal-dialog {
   width: 100%;
   max-width: 720px;
-  background: white;
+  background: var(--card-bg);
   border-radius: 12px;
   box-shadow: 0 10px 40px rgba(2,6,23,0.6);
   padding: 1.25rem;
-  transform: translateY(8px);
-  transition: transform 180ms ease, opacity 180ms ease;
 }
 
 .modal-header {
@@ -180,11 +321,17 @@ body.sidebar-open .sidebar-toggle-btn {
   gap:8px;
   margin-bottom:12px;
 }
-
 .modal-close {
   background: transparent;
   border: none;
   font-size: 1rem;
-  color: #64748b; /* gray-500 */
+  color: var(--muted);
   cursor: pointer;
+}
+
+/* Responsive tweaks (mobile overlay) */
+@media (max-width: 767px) {
+  .app-sidebar { transform: translateX(-100%); }
+  body.sidebar-open .app-sidebar { transform: translateX(0); }
+  .sidebar-toggle-btn { left: 12px; }
 }

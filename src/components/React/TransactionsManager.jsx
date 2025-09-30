@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Modal from "./Modal.jsx";
 
-const STORAGE_KEY = "pf_transactions_v2";
-const ACC_KEY = "pf_accounts_v1";
+// STORAGE_KEY for transactions still here, but state managed by DashboardApp
+// ACC_KEY not needed here, accounts come from props
 
 function parseTags(s) {
   return s
@@ -11,29 +11,34 @@ function parseTags(s) {
     .filter(Boolean);
 }
 
-export default function TransactionsManager() {
-  const [transactions, setTransactions] = useState([]);
-  const [accounts, setAccounts] = useState([]);
+// Helper to filter transactions
+const filterTransactionsByAccounts = (transactions, selectedAccountIds) => {
+  if (!selectedAccountIds || selectedAccountIds.length === 0) {
+    return [];
+  }
+  return transactions.filter(t => selectedAccountIds.includes(t.accountId));
+};
+
+
+export default function TransactionsManager({ accounts, allTransactions, setAllTransactions, selectedAccountIds }) { // Receive new props
+  // allTransactions state and useEffect for loading/saving removed, now handled by DashboardApp
   const [modalOpen, setModalOpen] = useState(false);
   const [form, setForm] = useState({ date: "", desc: "", amount: "", tags: "", accountId: "" });
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setTransactions(JSON.parse(raw));
-      const rawA = localStorage.getItem(ACC_KEY);
-      if (rawA) setAccounts(JSON.parse(rawA));
-    } catch (e) {
-      console.error(e);
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
-  }, [transactions]);
+  // Filter transactions based on selectedAccountIds
+  const transactions = useMemo(() => {
+    return filterTransactionsByAccounts(allTransactions, selectedAccountIds); // Use allTransactions prop here
+  }, [allTransactions, selectedAccountIds]); // Depend on allTransactions prop
 
   function openAddModal() {
-    setForm({ date: "", desc: "", amount: "", tags: "", accountId: accounts[0]?.id || "" });
+    setForm({
+      date: "",
+      desc: "",
+      amount: "",
+      tags: "",
+      // Pre-select the first currently selected account if available
+      accountId: selectedAccountIds.length > 0 ? selectedAccountIds[0] : accounts[0]?.id || ""
+    });
     setModalOpen(true);
   }
 
@@ -52,12 +57,12 @@ export default function TransactionsManager() {
       tags: parseTags(form.tags),
       accountId: form.accountId
     };
-    setTransactions([tx, ...transactions]);
+    setAllTransactions([tx, ...allTransactions]); // Update via prop setter
     setModalOpen(false);
   }
 
   function removeTx(id) {
-    setTransactions(transactions.filter((t) => t.id !== id));
+    setAllTransactions(allTransactions.filter((t) => t.id !== id)); // Update via prop setter
   }
 
   const income = transactions.filter(t => t.amount > 0).reduce((s,t) => s + t.amount, 0);
@@ -69,8 +74,7 @@ export default function TransactionsManager() {
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-2xl font-semibold">Transactions</h2>
         <div className="flex gap-2">
-          <button className="bg-blue-600 text-white px-4 py-2 rounded" onClick={openAddModal}>+ Add transaction</button>
-          <button className="bg-gray-200 px-3 py-2 rounded" onClick={() => { setTransactions([]); localStorage.removeItem(STORAGE_KEY); }}>Clear all</button>
+          <button className="btn-primary" onClick={openAddModal}>+ Add transaction</button>
         </div>
       </div>
 
@@ -83,17 +87,25 @@ export default function TransactionsManager() {
       </div>
 
       <ul className="divide-y">
-        {transactions.length === 0 && <li className="text-sm text-gray-500 py-4">No transactions yet.</li>}
+        {transactions.length === 0 && (
+          <li className="text-sm muted py-4 text-center">
+            {selectedAccountIds.length === 0 && accounts.length > 0
+              ? "Select one or more accounts to view transactions."
+              : "No transactions matching selected accounts yet."}
+          </li>
+        )}
         {transactions.map((t) => (
           <li key={t.id} className="py-3 flex justify-between items-start">
             <div>
               <div className="font-medium">{t.desc}</div>
-              <div className="text-xs text-gray-500">{t.date} • {t.tags.join(", ") || "-"} • {accounts.find(a=>a.id===t.accountId)?.name || "—"}</div>
+              <div className="text-xs muted">
+                {t.date} • {t.tags.join(", ") || "-"} • {accounts.find(a => a.id === t.accountId)?.name || "—"}
+              </div>
             </div>
 
             <div className="text-right">
               <div className={`font-semibold ${t.amount < 0 ? "text-red-600" : "text-green-600"}`}>{t.amount.toFixed(2)} ₡</div>
-              <button className="text-xs text-red-600 mt-1" onClick={() => removeTx(t.id)}>Remove</button>
+              <button className="text-xs text-red-600 mt-1 hover:underline" onClick={() => removeTx(t.id)}>Remove</button>
             </div>
           </li>
         ))}
@@ -132,8 +144,7 @@ export default function TransactionsManager() {
           </div>
 
           <div className="flex justify-end gap-2">
-            <button type="button" className="bg-gray-200 px-4 py-2 rounded" onClick={()=>setModalOpen(false)}>Cancel</button>
-            <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Add transaction</button>
+            <button type="submit" className="btn-primary">Add transaction</button>
           </div>
         </form>
       </Modal>
