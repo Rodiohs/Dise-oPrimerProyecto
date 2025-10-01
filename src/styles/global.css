@@ -2,71 +2,110 @@
 @tailwind utilities;
 
 :root {
-  /* Primary (blue-ish) */
-  --color-primary-r: 59;  --color-primary-g: 130; --color-primary-b: 246;
-  /* Accent (orange) */
-  --color-accent-r: 249;  --color-accent-g: 115; --color-accent-b: 22;
+  /* --- Light Mode Colors --- */
+  --color-primary: 59, 130, 246;    /* Tailwind Blue-500 */
+  --color-primary-alt: 37, 99, 235; /* Tailwind Blue-700 */
+  --color-primary-light: 96, 165, 250; /* Tailwind Blue-400 */
 
-  /* Surface / background / text */
-  --bg-r: 249;  --bg-g: 250; --bg-b: 251;    /* gray-50 */
-  --card-r: 255; --card-g: 255; --card-b: 255; /* white */
-  --text-r: 17;  --text-g: 24;  --text-b: 39;  /* gray-900 */
-  --muted-r: 100; --muted-g: 116; --muted-b: 139;
+  --color-secondary: 107, 114, 128; /* Tailwind Gray-500 */
+  --color-secondary-alt: 75, 85, 99; /* Tailwind Gray-700 */
 
-  --btn-border-r: 203; --btn-border-g: 213; --btn-border-b: 225; /* slate-300 */
-  --input-bg-r: 255; --input-bg-g: 255; --input-bg-b: 255; /* white */
-  --input-border-r: 209; --input-border-g: 213; --input-border-b: 219; /* gray-300 */
-  --input-text-r: 17; --input-text-g: 24; --input-text-b: 39; /* gray-900 */
+  --color-accent: 16, 185, 129;     /* Tailwind Green-500 - vibrant green */
+  --color-accent-alt: 4, 120, 87; /* Tailwind Green-700 */
+  --color-accent-light: 52, 211, 153; /* Tailwind Green-400 */
 
-  --selected-card-bg-r: 224; --selected-card-bg-g: 242; --selected-card-bg-b: 254; /* light blue */
-  --selected-card-border-r: 59; --selected-card-border-g: 130; --selected-card-border-b: 246; /* primary blue */
+  --color-success: 40, 167, 69;
+  --color-warning: 255, 193, 7;
+  --color-danger: 220, 53, 69;
 
+  --color-background-rgb: 255, 255, 255; /* white */
+  --color-surface-rgb: 243, 244, 246; /* Tailwind Gray-100 - light off-white */
+  --color-surface-lighter-rgb: 229, 231, 235; /* Tailwind Gray-200 */
+  --color-surface-darker-rgb: 209, 213, 219; /* Tailwind Gray-300 */
 
-  --motion-duration: 360ms;
+  --color-text-primary-rgb: 31, 41, 55; /* Tailwind Gray-800 - dark text */
+  --color-text-secondary-rgb: 107, 114, 128; /* Tailwind Gray-500 - medium text */
+  --color-text-on-primary-rgb: 255, 255, 255;
+  --color-text-on-dark-rgb: 255, 255, 255;
+  --color-border-rgb: 229, 231, 235; /* Tailwind Gray-200 */
+  --color-input-border-rgb: var(--color-border-rgb);
+  --color-input-bg-rgb: 255, 255, 255;
+  --color-input-text-rgb: var(--color-text-primary-rgb);
+
+  --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-medium: 0 4px 15px rgba(0, 0, 0, 0.12);
+  --shadow-large: 0 10px 25px rgba(0, 0, 0, 0.18);
+
+  --transition-fast: all 0.3s ease-in-out;
+  --section-padding: 100px 0;
+  --motion-duration: 360ms; /* From old theme, keep for consistency */
   --motion-ease: cubic-bezier(.2,.9,.2,1);
 }
 
-/* DARK theme variables (applied with :root.dark) */
-:root.dark {
-  /* Primary becomes dark blue */
-  --color-primary-r: 10;  --color-primary-g: 63;  --color-primary-b: 100;
-  /* Accent remains orange */
-  --color-accent-r: 249;  --color-accent-g: 115; --color-accent-b: 22;
+/* --- Dark Mode Colors - Applied via body.dark-mode --- */
+body.dark-mode {
+  --color-primary: 52, 211, 153;    /* Vibrant Green */
+  --color-primary-alt: 16, 185, 129;
+  --color-primary-light: 110, 231, 183;
 
-  /* Dark navy / surface / text */
-  --bg-r: 3;   --bg-g: 7;   --bg-b: 18;   /* very dark navy */
-  --card-r: 10; --card-g: 15; --card-b: 30;  /* slightly lighter card */
-  --text-r: 226; --text-g: 232; --text-b: 240; /* light text */
-  --muted-r: 148; --muted-g: 163; --muted-b: 184;
+  --color-secondary: 156, 163, 175; /* Tailwind Gray-400 */
+  --color-secondary-alt: 107, 114, 128;
 
-  --btn-border-r: 45; --btn-border-g: 62; --btn-border-b: 77; /* slate-700 like */
-  --input-bg-r: 15; --input-bg-g: 23; --input-bg-b: 42; /* slate-900 */
-  --input-border-r: 30; --input-border-g: 41; --input-border-b: 59; /* slate-800 */
-  --input-text-r: 226; --input-text-g: 232; --input-text-b: 240; /* light text */
+  --color-accent: 251, 191, 36;     /* Vibrant Yellow */
+  --color-accent-alt: 217, 119, 6;
+  --color-accent-light: 252, 211, 77;
 
-  --selected-card-bg-r: 17; --selected-card-bg-g: 24; --selected-card-bg-b: 39; /* dark gray */
-  --selected-card-border-r: 147; --selected-card-border-g: 197; --selected-card-border-b: 253; /* light blue-ish */
+  --color-background-rgb: 17, 24, 39; /* Tailwind Gray-900 - dark background */
+  --color-surface-rgb: 31, 41, 55; /* Tailwind Gray-800 - slightly lighter dark */
+  --color-surface-lighter-rgb: 55, 65, 81; /* Tailwind Gray-700 */
+  --color-surface-darker-rgb: 75, 85, 99; /* Tailwind Gray-600 */
+
+  --color-text-primary-rgb: 229, 231, 235; /* Tailwind Gray-200 - light text */
+  --color-text-secondary-rgb: 156, 163, 175; /* Tailwind Gray-400 - medium text */
+  --color-text-on-primary-rgb: 255, 255, 255;
+  --color-text-on-dark-rgb: 255, 255, 255;
+  --color-border-rgb: 75, 85, 99; /* Tailwind Gray-600 */
+  --color-input-border-rgb: var(--color-border-rgb);
+  --color-input-bg-rgb: 31, 41, 55;
+  --color-input-text-rgb: var(--color-text-primary-rgb);
+
+  --shadow-light: 0 2px 8px rgba(255, 255, 255, 0.08);
+  --shadow-medium: 0 4px 15px rgba(255, 255, 255, 0.12);
+  --shadow-large: 0 10px 25px rgba(255, 255, 255, 0.18);
 }
 
-/* Derived variables for convenience (CSS var strings) */
-:root, :root.dark {
-  --bg: rgb(var(--bg-r) var(--bg-g) var(--bg-b));
-  --card-bg: rgb(var(--card-r) var(--card-g) var(--card-b));
-  --text-color: rgb(var(--text-r) var(--text-g) var(--text-b));
-  --muted: rgb(var(--muted-r) var(--muted-g) var(--muted-b));
-  --primary: rgb(var(--color-primary-r) var(--color-primary-g) var(--color-primary-b));
-  --accent: rgb(var(--color-accent-r) var(--color-accent-g) var(--color-accent-b));
-  --btn-border: rgb(var(--btn-border-r) var(--btn-border-g) var(--btn-border-b));
-  --input-bg: rgb(var(--input-bg-r) var(--input-bg-g) var(--input-bg-b));
-  --input-border: rgb(var(--input-border-r) var(--input-border-g) var(--input-border-b));
-  --input-text: rgb(var(--input-text-r) var(--input-text-g) var(--input-text-b));
-  --selected-card-bg: rgb(var(--selected-card-bg-r) var(--selected-card-bg-g) var(--selected-card-bg-b));
-  --selected-card-border: rgb(var(--selected-card-border-r) var(--selected-card-border-g) var(--selected-card-border-b));
+/* --- Mapped CSS Variables for direct use --- */
+:root, body {
+  --primary: rgb(var(--color-primary));
+  --primary-alt: rgb(var(--color-primary-alt));
+  --primary-light: rgb(var(--color-primary-light));
+  --secondary: rgb(var(--color-secondary));
+  --accent: rgb(var(--color-accent));
+  --accent-alt: rgb(var(--color-accent-alt));
+  --accent-light: rgb(var(--color-accent-light));
+  --background: rgb(var(--color-background-rgb));
+  --surface: rgb(var(--color-surface-rgb));
+  --surface-lighter: rgb(var(--color-surface-lighter-rgb));
+  --surface-darker: rgb(var(--color-surface-darker-rgb));
+  --text-primary: rgb(var(--color-text-primary-rgb));
+  --text-secondary: rgb(var(--color-text-secondary-rgb));
+  --text-on-primary: rgb(var(--color-text-on-primary-rgb));
+  --border: rgb(var(--color-border-rgb));
+  --input-border: rgb(var(--color-input-border-rgb));
+  --input-bg: rgb(var(--color-input-bg-rgb));
+  --input-text: rgb(var(--color-input-text-rgb));
+
+  /* Custom Finance app specific (re-mapped) */
+  --card-bg: var(--surface);
+  --muted: var(--text-secondary);
+  --btn-border: var(--border); /* Buttons will use border variable */
+  --selected-card-bg: var(--surface-lighter);
+  --selected-card-border: var(--primary-light);
 }
 
-/* ===========================
+/* ========================================================
    THEME TRANSITION / ANIMATION
-   =========================== */
+   ======================================================== */
 @keyframes theme-fade-in {
   from { opacity: 0; transform: scale(0.995); }
   to   { opacity: 1; transform: scale(1); }
@@ -82,85 +121,84 @@ body.theme-animating::after {
   z-index: 9998;
 }
 
-/* ===========================
-   BASE LAYOUT / UTILITY HELPERS
-   =========================== */
+/* ========================================================
+   BASE STYLES & LAYOUT - ADOPTED FROM QUANTUM LEAP EXAMPLE
+   ======================================================== */
 @layer base {
-  html, body, #root {
-    height: 100%;
-  }
+  html, body, #root { height: 100%; }
 
   body {
-    background: var(--bg);
-    color: var(--text-color);
+    background-color: var(--background);
+    background-image:
+      radial-gradient(
+        at 90% 10%,
+        rgba(var(--color-accent), 0.15) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        at 10% 90%,
+        rgba(var(--color-primary), 0.1) 0%,
+        transparent 50%
+      );
+    background-size: 150% 150%;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+
+    font-family: 'Inter', sans-serif;
+    line-height: 1.7;
+    margin: 0; padding: 0;
+    color: var(--text-primary);
+    transition: background-color var(--motion-duration) var(--motion-ease), color var(--motion-duration) var(--motion-ease);
+    overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    transition: background-color var(--motion-duration) var(--motion-ease),
-                color var(--motion-duration) var(--motion-ease);
-    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
-      "Helvetica Neue", Arial;
   }
+  
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 25px; }
 
-  /* Card helper uses card-bg variable */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+    margin-top: 0; margin-bottom: 1.2rem; line-height: 1.3;
+    color: var(--text-primary);
+  }
+  h2 { font-size: 2.8rem; } h3 { font-size: 2rem; } h4 { font-size: 1.4rem; }
+  p {
+    font-size: 1.1rem; margin-bottom: 1.5rem; color: var(--text-secondary); line-height: 1.8;
+  }
+  a { color: var(--primary); text-decoration: none; transition: var(--transition-fast); }
+  a:hover { color: var(--accent); text-decoration: underline; }
+
+  /* ========================================================
+     FINANCE APP SPECIFIC COMPONENTS - RE-STYLED
+     ======================================================== */
   .card {
     background: var(--card-bg);
-    color: var(--text-color);
-    border-radius: 0.5rem;
-    box-shadow: 0 6px 18px rgba(2,6,23,0.06);
-    padding: 1rem;
-    border: 1px solid transparent; /* default transparent border */
-    cursor: default; /* default cursor */
-    transition: background-color var(--motion-duration) var(--motion-ease),
-                color var(--motion-duration) var(--motion-ease),
-                box-shadow calc(var(--motion-duration)/1.4) var(--motion-ease),
-                border-color var(--motion-duration) var(--motion-ease);
+    color: var(--text-primary);
+    border-radius: 0.75rem;
+    box-shadow: var(--shadow-medium);
+    padding: 1.25rem;
+    border: 1px solid var(--border); /* Use new border variable for default card */
+    cursor: default;
+    transition: var(--transition-fast);
   }
 
-  /* Style for selected cards */
+  .card.selectable {
+    cursor: pointer;
+    border-color: rgba(var(--color-primary), 0.5);
+  }
   .card.selectable:hover {
-    box-shadow: 0 8px 24px rgba(2,6,23,0.1); /* slight lift on hover */
+    box-shadow: var(--shadow-large);
+    transform: translateY(-5px);
   }
-
+  .card.selectable:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-medium);
+  }
   .card.selectable.selected-card {
     background: var(--selected-card-bg);
     border-color: var(--selected-card-border);
-    box-shadow: 0 8px 24px rgba(2,6,23,0.15);
-  }
-
-
-  .container {
-    max-width: 1100px;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-
-  /* Buttons that follow theme */
-  .btn-primary {
-    background: var(--primary);
-    color: white;
-    border: 1px solid var(--btn-border);
-    border-radius: 0.5rem;
-    padding: 0.5rem 0.875rem;
-    display: inline-flex;
-    align-items: center;
-    gap: .5rem;
-    transition: background-color var(--motion-duration) var(--motion-ease),
-                border-color var(--motion-duration) var(--motion-ease);
-  }
-
-  .btn-accent {
-    background: var(--accent);
-    color: white;
-    border: 1px solid var(--btn-border);
-    border-radius: 0.5rem;
-    padding: 0.5rem 0.875rem;
-    display: inline-flex;
-    align-items: center;
-    gap: .5rem;
-    transition: background-color var(--motion-duration) var(--motion-ease),
-                border-color var(--motion-duration) var(--motion-ease);
+    box-shadow: 0 8px 24px rgba(var(--color-primary), 0.25);
+    transform: translateY(-2px);
   }
 
   .muted {
@@ -168,170 +206,233 @@ body.theme-animating::after {
   }
 }
 
-/* ===========================
-   FORM INPUT STYLES (for forms plugin)
-   =========================== */
+/* ========================================================
+   FORM INPUT STYLES
+   ======================================================== */
 @layer components {
+  /* --- BUTTONS (ADOPTED FROM QUANTUM LEAP EXAMPLE) --- */
+  .btn {
+    display: inline-block;
+    color: var(--color-primary-alt);
+    padding: 16px 40px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.8px;
+    transition: var(--transition-fast), transform 0.2s ease-out;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0px 6px 22px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    /* NEW: Ensure default button background is transparent for gradients to show */
+    background-color: transparent; /* NOT !important, let btn-primary override with gradient */
+  }
+  .btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Primary Button - Vibrant Gradient */
+  .btn-primary {
+    background-image: linear-gradient(to right, var(--primary-light) 0%, var(--primary-light) 70%, var(--primary-alt) 100%);
+    color: white;
+    border: none;
+  }
+  .btn-primary:hover {
+    background-image: linear-gradient(to right, var(--color-primary) 0%, var(--color-primary) 70%, var(--primary-light) 100%);
+    color: white;
+  }
+
+  /* Secondary Button - Outline with Accent */
+  .btn-secondary { /* Re-purposed from btn-accent in finance app context */
+    background-color: transparent;
+    color: var(--color-primary);
+    border: 3px solid var(--color-primary);
+    padding: 13px 37px;
+  }
+  .btn-secondary:hover {
+    background-color: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+  
+  /* Neutral Outline Button for Cancel / Clear (adopted from Quantum Leap's btn-outline-dark) */
+  .btn-neutral-outline {
+    background-color: transparent;
+    color: var(--text-primary);
+    border: 2px solid var(--border);
+    padding: 14px 38px;
+  }
+  .btn-neutral-outline:hover {
+    background-color: var(--surface-lighter);
+    color: var(--text-primary);
+  }
+  body.dark-mode .btn-neutral-outline:hover {
+    background-color: var(--surface-darker);
+  }
+
+  /* Form inputs */
   .form-input,
   .form-textarea,
   .form-select {
     background-color: var(--input-bg);
     color: var(--input-text);
-    border-color: var(--input-border);
+    border: 1px solid var(--input-border);
+    border-radius: 0.375rem;
+    padding: 0.625rem 0.875rem;
+    &:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(var(--color-primary), 0.2);
+    }
     &::placeholder {
       color: var(--muted);
       opacity: 0.7;
     }
     transition: background-color var(--motion-duration) var(--motion-ease),
                 color var(--motion-duration) var(--motion-ease),
-                border-color var(--motion-duration) var(--motion-ease);
+                border-color var(--motion-duration) var(--motion-ease),
+                box-shadow var(--motion-duration) var(--motion-ease);
   }
-
   .form-select {
-    /* To ensure the default dropdown arrow is also theme-aware,
-       we might need to override the background-image SVG directly.
-       However, often just setting 'color' affects the SVG's fill. */
-    color: var(--input-text); /* Ensure selected option text is visible */
+    color: var(--input-text);
   }
 
+
+  /* Existing container helper */
   .container {
     @apply mx-auto px-4;
-    max-width: 1100px;
+    max-width: 1100px; /* Adjusted to 1100px for consistency with main.astro, or could match 1200px from base */
   }
 }
 
-/* General property transitions for smooth theme change */
+/* General property transitions for smooth theme change on all elements */
 * {
   transition: background-color 200ms var(--motion-ease),
               color 200ms var(--motion-ease),
               border-color 180ms var(--motion-ease),
-              box-shadow 220ms var(--motion-ease);
+              box-shadow 220ms var(--motion-ease),
+              transform 180ms ease-out;
 }
 
 
-/* ===========================
+/* ========================================================
    SIDEBAR & TOGGLE
-   =========================== */
+   ======================================================== */
 :root {
   --sidebar-width: 260px;
   --sidebar-collapsed-width: 64px;
 }
 
 .app-sidebar {
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 0;
+  position: fixed; left: 0; top: 0; bottom: 0;
   width: var(--sidebar-width);
   transform: translateX(calc(-100% + var(--sidebar-width)));
   transition: transform var(--motion-duration) var(--motion-ease);
   z-index: 40;
-  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
-  color: var(--text-color);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  background: var(--surface);
+  color: var(--text-primary);
+  display: flex; flex-direction: column; gap: 8px;
   padding: 1rem 0.5rem;
-  backdrop-filter: blur(6px);
+  box-shadow: 2px 0 12px rgba(0,0,0,0.08);
+  border-right: 1px solid var(--border);
+  transition: var(--transition-fast);
+}
+body.dark-mode .app-sidebar {
+  box-shadow: 2px 0 12px rgba(255,255,255,0.08);
 }
 
-body:not(.sidebar-open) .app-sidebar {
-  transform: translateX(calc(-100% + var(--sidebar-collapsed-width)));
-}
+body:not(.sidebar-open) .app-sidebar { transform: translateX(calc(-100% + var(--sidebar-collapsed-width))); }
+body.sidebar-open .app-sidebar { transform: translateX(0); }
 
-body.sidebar-open .app-sidebar {
-  transform: translateX(0);
-}
-
-.app-sidebar .brand {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
-}
+.app-sidebar .brand { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; }
 .app-sidebar .nav-link {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 0.5rem;
-  border-radius: 0.375rem;
-  color: var(--muted);
-  text-decoration: none;
-  font-size: 0.95rem;
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.5rem 0.5rem; border-radius: 0.375rem;
+  color: var(--text-secondary);
+  text-decoration: none; font-size: 0.95rem;
+  transition: var(--transition-fast);
 }
 .app-sidebar .nav-link:hover {
-  background: rgba(255,255,255,0.03);
-  color: var(--text-color);
+  background: rgba(var(--color-primary), 0.1);
+  color: var(--primary);
 }
-.app-sidebar .nav-link .icon {
-  width: 1.25rem;
-  display: inline-flex;
-  justify-content: center;
-}
+.app-sidebar .nav-link .icon { width: 1.25rem; display: inline-flex; justify-content: center; }
 
 .sidebar-toggle-btn {
-  position: fixed;
-  left: var(--sidebar-collapsed-width);
-  top: 12px;
-  z-index: 50;
-  width: 42px;
-  height: 42px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  position: fixed; left: var(--sidebar-collapsed-width); top: 12px;
+  z-index: 50; width: 42px; height: 42px;
+  display: inline-flex; align-items: center; justify-content: center;
   border-radius: 10px;
-  background: var(--card-bg);
-  color: var(--text-color);
-  box-shadow: 0 6px 18px rgba(2,6,23,0.06);
-  transition: left var(--motion-duration) var(--motion-ease), transform var(--motion-duration) var(--motion-ease);
+  background: var(--surface-lighter);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-medium);
+  transition: var(--transition-fast);
+}
+.sidebar-toggle-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-large);
 }
 body.sidebar-open .sidebar-toggle-btn {
-  left: calc(var(--sidebar-width) + 12px);
-  transform: translateX(-12px);
+  left: calc(var(--sidebar-width) + 12px); transform: translateX(-12px);
 }
 
-/* ===========================
+
+/* ========================================================
    MODAL
-   =========================== */
+   ======================================================== */
 .modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(3,7,18,0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: fixed; inset: 0;
+  background: rgba(var(--color-background-rgb), 0.8);
+  display: flex; align-items: center; justify-content: center;
   z-index: 60;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(8px);
   animation: theme-fade-in 220ms var(--motion-ease);
 }
-
+body.dark-mode .modal-overlay {
+  background: rgba(var(--color-background-rgb), 0.8);
+}
 .modal-dialog {
-  width: 100%;
-  max-width: 720px;
+  width: 100%; max-width: 720px;
   background: var(--card-bg);
   border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(2,6,23,0.6);
-  padding: 1.25rem;
+  box-shadow: var(--shadow-large);
+  padding: 1.5rem;
 }
-
 .modal-header {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:8px;
-  margin-bottom:12px;
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  margin-bottom:1.25rem;
 }
 .modal-close {
-  background: transparent;
-  border: none;
-  font-size: 1rem;
-  color: var(--muted);
-  cursor: pointer;
+  background: transparent; border: none; font-size: 1.2rem;
+  color: var(--muted); cursor: pointer;
 }
 
-/* Responsive tweaks (mobile overlay) */
+/* ========================================================
+   THEME ANIMATION
+   ======================================================== */
+body.theme-animating::after {
+  animation: theme-fade-in var(--motion-duration) var(--motion-ease) forwards;
+}
+/* General property transitions for smooth theme change on all elements */
+* {
+  transition: background-color 200ms var(--motion-ease),
+              color 200ms var(--motion-ease),
+              border-color 180ms var(--motion-ease),
+              box-shadow 220ms var(--motion-ease),
+              transform 180ms ease-out;
+}
+
+
+/* ========================================================
+   RESPONSIVE TWEAKS
+   ======================================================== */
 @media (max-width: 767px) {
   .app-sidebar { transform: translateX(-100%); }
   body.sidebar-open .app-sidebar { transform: translateX(0); }
   .sidebar-toggle-btn { left: 12px; }
 }
+

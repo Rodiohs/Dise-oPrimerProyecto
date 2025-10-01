@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import Modal from "./Modal.jsx";
 
-// STORAGE_KEY for transactions still here, but state managed by DashboardApp
-// ACC_KEY not needed here, accounts come from props
+const STORAGE_KEY = "pf_transactions_v2";
 
 function parseTags(s) {
   return s
@@ -11,7 +10,6 @@ function parseTags(s) {
     .filter(Boolean);
 }
 
-// Helper to filter transactions
 const filterTransactionsByAccounts = (transactions, selectedAccountIds) => {
   if (!selectedAccountIds || selectedAccountIds.length === 0) {
     return [];
@@ -20,15 +18,14 @@ const filterTransactionsByAccounts = (transactions, selectedAccountIds) => {
 };
 
 
-export default function TransactionsManager({ accounts, allTransactions, setAllTransactions, selectedAccountIds }) { // Receive new props
-  // allTransactions state and useEffect for loading/saving removed, now handled by DashboardApp
+export default function TransactionsManager({ accounts, allTransactions, setAllTransactions, selectedAccountIds }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [form, setForm] = useState({ date: "", desc: "", amount: "", tags: "", accountId: "" });
 
-  // Filter transactions based on selectedAccountIds
   const transactions = useMemo(() => {
-    return filterTransactionsByAccounts(allTransactions, selectedAccountIds); // Use allTransactions prop here
-  }, [allTransactions, selectedAccountIds]); // Depend on allTransactions prop
+    return filterTransactionsByAccounts(allTransactions, selectedAccountIds);
+  }, [allTransactions, selectedAccountIds]);
+
 
   function openAddModal() {
     setForm({
@@ -36,7 +33,6 @@ export default function TransactionsManager({ accounts, allTransactions, setAllT
       desc: "",
       amount: "",
       tags: "",
-      // Pre-select the first currently selected account if available
       accountId: selectedAccountIds.length > 0 ? selectedAccountIds[0] : accounts[0]?.id || ""
     });
     setModalOpen(true);
@@ -57,12 +53,12 @@ export default function TransactionsManager({ accounts, allTransactions, setAllT
       tags: parseTags(form.tags),
       accountId: form.accountId
     };
-    setAllTransactions([tx, ...allTransactions]); // Update via prop setter
+    setAllTransactions([tx, ...allTransactions]);
     setModalOpen(false);
   }
 
   function removeTx(id) {
-    setAllTransactions(allTransactions.filter((t) => t.id !== id)); // Update via prop setter
+    setAllTransactions(allTransactions.filter((t) => t.id !== id));
   }
 
   const income = transactions.filter(t => t.amount > 0).reduce((s,t) => s + t.amount, 0);
@@ -74,7 +70,8 @@ export default function TransactionsManager({ accounts, allTransactions, setAllT
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-2xl font-semibold">Transactions</h2>
         <div className="flex gap-2">
-          <button className="btn-primary" onClick={openAddModal}>+ Add transaction</button>
+          {/* Ensure btn and btn-primary classes are correctly applied */}
+          <button className="btn btn-primary" onClick={openAddModal}>+ Add transaction</button>
         </div>
       </div>
 
@@ -115,23 +112,23 @@ export default function TransactionsManager({ accounts, allTransactions, setAllT
         <form onSubmit={addTx} className="space-y-3">
           <div>
             <label className="text-sm block mb-1">Date</label>
-            <input className="form-input border rounded p-2 w-full" type="date" value={form.date} onChange={e=>setForm({...form, date:e.target.value})} />
+            <input className="form-input w-full" type="date" value={form.date} onChange={e=>setForm({...form, date:e.target.value})} />
           </div>
 
           <div>
             <label className="text-sm block mb-1">Description</label>
-            <input className="form-input border rounded p-2 w-full" value={form.desc} onChange={e=>setForm({...form, desc:e.target.value})} />
+            <input className="form-input w-full" value={form.desc} onChange={e=>setForm({...form, desc:e.target.value})} />
           </div>
 
           <div className="grid md:grid-cols-2 gap-2">
             <div>
               <label className="text-sm block mb-1">Amount (positive income, negative expense)</label>
-              <input className="form-input border rounded p-2 w-full" type="number" step="0.01" value={form.amount} onChange={e=>setForm({...form, amount:e.target.value})} />
+              <input className="form-input w-full" type="number" step="0.01" value={form.amount} onChange={e=>setForm({...form, amount:e.target.value})} />
             </div>
 
             <div>
               <label className="text-sm block mb-1">Account</label>
-              <select className="form-input border rounded p-2 w-full" value={form.accountId} onChange={e=>setForm({...form, accountId:e.target.value})}>
+              <select className="form-input w-full" value={form.accountId} onChange={e=>setForm({...form, accountId:e.target.value})}>
                 <option value="">Select account</option>
                 {accounts.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
               </select>
@@ -140,11 +137,12 @@ export default function TransactionsManager({ accounts, allTransactions, setAllT
 
           <div>
             <label className="text-sm block mb-1">Tags (comma separated)</label>
-            <input className="form-input border rounded p-2 w-full" value={form.tags} onChange={e=>setForm({...form, tags:e.target.value})} />
+            <input className="form-input w-full" value={form.tags} onChange={e=>setForm({...form, tags:e.target.value})} />
           </div>
 
           <div className="flex justify-end gap-2">
-            <button type="submit" className="btn-primary">Add transaction</button>
+            <button type="button" className="btn btn-neutral-outline" onClick={()=>setModalOpen(false)}>Cancel</button>
+            <button type="submit" className="btn btn-primary">Add transaction</button>
           </div>
         </form>
       </Modal>

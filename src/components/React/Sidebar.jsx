@@ -42,7 +42,7 @@ export default function Sidebar() {
 
       <aside className={`app-sidebar ${mobileOpen ? "mobile-open" : ""}`} aria-hidden={!open && !mobileOpen}>
         <div className="brand px-3">
-          <div style={{ color: "var(--primary)" }} className="font-semibold text-lg">Finance</div>
+          <div className="font-semibold text-lg" style={{ color: 'var(--primary)' }}>Finance</div>
         </div>
 
         <nav className="mt-2 px-1">

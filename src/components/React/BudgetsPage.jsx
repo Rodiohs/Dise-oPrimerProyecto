@@ -13,6 +13,17 @@ export default function BudgetsPage() {
     if (rawT) setTransactions(JSON.parse(rawT));
     const rawB = localStorage.getItem(BUDGET_KEY);
     if (rawB) setBudgets(JSON.parse(rawB));
+
+    // Listen for transaction changes to update spent amounts
+    function handleStorageChange(event) {
+      if (event.key === TX_KEY) {
+        setTransactions(JSON.parse(event.newValue || "[]"));
+      }
+    }
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
   }, []);
 
   useEffect(() => {
@@ -30,11 +41,10 @@ export default function BudgetsPage() {
     setBudgets(budgets.filter(b => b.id !== id));
   }
 
-  // compute spent for a budget by summing transactions whose tags include the budget's tag
   function computeSpent(budget) {
     return transactions
       .filter(t => (t.tags || []).includes(budget.tag))
-      .reduce((s, t) => s + (t.amount < 0 ? Math.abs(t.amount) : 0), 0); // only count expenses as spent
+      .reduce((s, t) => s + (t.amount < 0 ? Math.abs(t.amount) : 0), 0);
   }
 
   return (
@@ -47,12 +57,12 @@ export default function BudgetsPage() {
       <div className="card mb-6">
         <h3 className="font-medium mb-2">Create Budget</h3>
         <form onSubmit={addBudget} className="grid gap-2 md:grid-cols-3">
-          <input className="form-input border rounded p-2" placeholder="Budget name" value={form.name} onChange={e=>setForm({...form, name:e.target.value})} />
-          <input className="form-input border rounded p-2" placeholder="Limit (amount)" type="number" value={form.limit} onChange={e=>setForm({...form, limit:e.target.value})} />
-          <input className="form-input border rounded p-2" placeholder="Tag to track (exact)" value={form.tag} onChange={e=>setForm({...form, tag:e.target.value})} />
+          <input className="form-input w-full" placeholder="Budget name" value={form.name} onChange={e=>setForm({...form, name:e.target.value})} />
+          <input className="form-input w-full" placeholder="Limit (amount)" type="number" value={form.limit} onChange={e=>setForm({...form, limit:e.target.value})} />
+          <input className="form-input w-full" placeholder="Tag to track (exact)" value={form.tag} onChange={e=>setForm({...form, tag:e.target.value})} />
           <div className="md:col-span-3 flex gap-2 mt-2">
-            <button className="btn-primary px-4 py-2 rounded" type="submit">Add Budget</button>
-            <button type="button" className="bg-gray-200 px-4 py-2 rounded" onClick={()=>{ setBudgets([]); localStorage.removeItem(BUDGET_KEY); }}>Clear budgets</button>
+            <button className="btn btn-primary" type="submit">Add Budget</button> {/* Use btn btn-primary */}
+            <button type="button" className="btn btn-neutral-outline" onClick={()=>{ setBudgets([]); localStorage.removeItem(BUDGET_KEY); }}>Clear budgets</button> {/* Use btn btn-neutral-outline */}
           </div>
         </form>
       </div>
@@ -84,7 +94,6 @@ export default function BudgetsPage() {
                   <div>Left: <span className="font-medium">{left.toFixed(2)} ₡</span></div>
                 </div>
 
-                {/* progress bar */}
                 <div className="w-full bg-gray-200 rounded h-4 overflow-hidden">
                   <div
                     className={`h-4 ${progress >= 100 ? "bg-red-600" : "bg-green-500"}`}
@@ -98,7 +107,7 @@ export default function BudgetsPage() {
 
                 <div className="flex justify-between mt-2 text-xs muted">
                   <div>{Math.round(progress)}%</div>
-                  <div><button className="text-sm text-red-600" onClick={()=>removeBudget(b.id)}>Remove</button></div>
+                  <div><button className="text-sm text-red-600 hover:underline" onClick={()=>removeBudget(b.id)}>Remove</button></div>
                 </div>
               </div>
             </div>

@@ -4,18 +4,22 @@ export default function ThemeToggle() {
   const [dark, setDark] = useState(false);
 
   useEffect(() => {
+    const bodyElement = document.body; // Target the body for the dark-mode class
     const saved = localStorage.getItem("ui_theme");
+
     if (saved === "dark" || saved === "light") {
       const isDark = saved === "dark";
       setDark(isDark);
-      if (isDark) document.documentElement.classList.add("dark");
-      else document.documentElement.classList.remove("dark");
+      if (isDark) bodyElement.classList.add("dark-mode"); // Use new class name
+      else bodyElement.classList.remove("dark-mode"); // Use new class name
       return;
     }
+
     const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
     setDark(prefersDark);
-    if (prefersDark) document.documentElement.classList.add("dark");
-    else document.documentElement.classList.remove("dark");
+    if (prefersDark) bodyElement.classList.add("dark-mode"); // Use new class name
+    else bodyElement.classList.remove("dark-mode"); // Use new class name
+
   }, []);
 
   function setAnimating() {
@@ -28,11 +32,12 @@ export default function ThemeToggle() {
     const next = !dark;
     setDark(next);
     setAnimating();
+    const bodyElement = document.body; // Target the body
     if (next) {
-      document.documentElement.classList.add("dark");
+      bodyElement.classList.add("dark-mode"); // Use new class name
       localStorage.setItem("ui_theme", "dark");
     } else {
-      document.documentElement.classList.remove("dark");
+      bodyElement.classList.remove("dark-mode"); // Use new class name
       localStorage.setItem("ui_theme", "light");
     }
   }

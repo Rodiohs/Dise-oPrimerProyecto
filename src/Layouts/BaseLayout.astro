@@ -9,16 +9,30 @@ const { title = "Finance App" } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <link rel="stylesheet" href="/src/styles/global.css" />
+    <!-- Google Fonts for Inter and Montserrat as per Quantum Leap Example -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
   </head>
-  <body class="min-h-screen">
+  <body class="min-h-screen"> {/* No 'dark-mode' class, as it's the default */}
     <Sidebar client:load />
+
+    <header class="py-4 border-b border-[rgba(var(--color-border-rgb),0.1)] sticky top-0 z-20" style="background-color: var(--surface);">
+      <div class="container flex items-center justify-between">
+        <a href="/" class="text-xl font-semibold" style="color: var(--primary);">Finance App</a>
+        <nav class="space-x-4 text-sm" style="color: var(--text-secondary);">
+          <a href="/" style="color: inherit;" class="hover:text-[var(--accent)]">Dashboard</a>
+          <a href="/budgets" style="color: inherit;" class="hover:text-[var(--accent)]">Budgets</a>
+        </nav>
+      </div>
+    </header>
 
     <main class="container py-8">
       <slot />
     </main>
 
-    <footer class="border-t theme-transition"> <!-- removed bg-white -->
-      <div class="container py-4 text-sm muted">
+    <footer class="py-4 border-t border-[rgba(var(--color-border-rgb),0.1)]" style="background-color: var(--surface);">
+      <div class="container text-sm" style="color: var(--text-secondary);">
         <span>Proyecto: Aplicación financiera personal — Proyecto 1</span>
       </div>
     </footer>

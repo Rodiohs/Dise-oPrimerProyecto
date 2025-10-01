@@ -1,16 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Modal from "./Modal.jsx";
 
-// ACC_KEY and TX_KEY are now managed by DashboardApp (TX_KEY needed for balances here)
-const TX_KEY = "pf_transactions_v2"; // Keep local import for fallback/initial balance calc logic if needed.
+const TX_KEY = "pf_transactions_v2";
 
-export default function Accounts({ accounts, setAccounts, selectedAccountIds, onSelectAccount, allTransactions }) { // Receive new prop: allTransactions
-  // transactions state removed, now using props for calculating balances
+export default function Accounts({ accounts, setAccounts, selectedAccountIds, onSelectAccount, allTransactions }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [form, setForm] = useState({ name: "", start: "" });
-
-  // No useEffect for local transaction load/storage listener needed here, using props for transactions
-  // The balances use the `allTransactions` prop directly.
 
   function addAccount(e) {
     e?.preventDefault();
@@ -29,20 +24,21 @@ export default function Accounts({ accounts, setAccounts, selectedAccountIds, on
   const balances = useMemo(() => {
     const map = {};
     accounts.forEach(a => { map[a.id] = (a.start || 0); });
-    allTransactions.forEach(t => { // Use allTransactions prop here
+    allTransactions.forEach(t => {
       if (t.accountId && map[t.accountId] !== undefined) {
         map[t.accountId] += t.amount;
       }
     });
     return map;
-  }, [accounts, allTransactions]); // Depend on accounts prop and allTransactions prop
+  }, [accounts, allTransactions]);
 
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-2xl font-semibold">Accounts</h2>
         <div>
-          <button onClick={() => setModalOpen(true)} className="btn-primary px-4 py-2 rounded shadow">
+          {/* Ensure btn and btn-primary classes are correctly applied */}
+          <button onClick={() => setModalOpen(true)} className="btn btn-primary">
             + Add account
           </button>
         </div>
@@ -83,16 +79,17 @@ export default function Accounts({ accounts, setAccounts, selectedAccountIds, on
         <form onSubmit={addAccount} className="space-y-3">
           <div>
             <label className="text-sm block mb-1">Account name</label>
-            <input className="form-input border rounded p-2 w-full" value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
+            <input className="form-input w-full" value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
           </div>
 
           <div>
             <label className="text-sm block mb-1">Starting amount</label>
-            <input className="form-input border rounded p-2 w-full" type="number" value={form.start} onChange={e => setForm({...form, start: e.target.value})} />
+            <input className="form-input w-full" type="number" value={form.start} onChange={e => setForm({...form, start: e.target.value})} />
           </div>
 
           <div className="flex justify-end gap-2">
-            <button type="submit" className="btn-primary px-4 py-2 rounded">Create</button>
+            <button type="button" className="btn btn-neutral-outline" onClick={() => setModalOpen(false)}>Cancel</button>
+            <button type="submit" className="btn btn-primary">Create</button>
           </div>
         </form>
       </Modal>
