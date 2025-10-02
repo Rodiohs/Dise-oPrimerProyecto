@@ -55,6 +55,16 @@ export default function Sidebar() {
             <span className="icon">📊</span>
             <span className="label">Budgets</span>
           </a>
+
+          <a className="nav-link mt-1" href="/guarantees">
+            <span className="icon">✅</span>
+            <span className="label">Guarantees</span>
+          </a>
+
+          <a className="nav-link mt-1" href="/debts">
+            <span className="icon">💸</span>
+            <span className="label">Debts/Loans</span>
+          </a>
         </nav>
 
         <div className="mt-auto px-3 pb-4">
@@ -62,10 +72,7 @@ export default function Sidebar() {
             <ThemeToggle />
           </div>
 
-          <a className="nav-link" href="#" onClick={(e) => { e.preventDefault(); alert('Logout placeholder'); }}>
-            <span className="icon">⎋</span>
-            <span className="label">Logout</span>
-          </a>
+          
         </div>
       </aside>
     </>

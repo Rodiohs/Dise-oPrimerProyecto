@@ -10,7 +10,7 @@ function parseTags(s) {
     .filter(Boolean);
 }
 
-// Helper to filter transactions (now also handles accountId)
+// Helper to filter transactions
 const filterTransactions = (transactions, selectedAccountIds, filters) => {
   let filteredTransactions = transactions;
 
@@ -32,8 +32,8 @@ const filterTransactions = (transactions, selectedAccountIds, filters) => {
   // Tags Filter
   if (filters.tags && filters.tags.length > 0) {
     filteredTransactions = filteredTransactions.filter(t => {
-      if (!t.tags || t.tags.length === 0) return false; // No tags means no match
-      return filters.tags.every(filterTag => t.tags.includes(filterTag)); // "Contains all" logic
+      if (!t.tags || t.tags.length === 0) return false;
+      return filters.tags.every(filterTag => t.tags.includes(filterTag));
     });
   }
 
@@ -45,22 +45,10 @@ const filterTransactions = (transactions, selectedAccountIds, filters) => {
     );
   }
 
-  // Amount Filter
-  if (filters.amount && filters.amountOperator) { // Ensure an amount and operator are defined
-    const amountValue = parseFloat(filters.amount);
-    if (!isNaN(amountValue)) { // Only proceed if amount is a valid number
-      if (filters.amountOperator === 'gt') {
-        filteredTransactions = filteredTransactions.filter(t => t.amount > amountValue);
-      } else if (filters.amountOperator === 'lt') {
-        filteredTransactions = filteredTransactions.filter(t => t.amount < amountValue);
-      } else if (filters.amountOperator === 'between') {
-        // Assuming filters.amount is a string in the format "min,max"
-        const [min, max] = filters.amount.split(',').map(s => parseFloat(s.trim()));
-        if (!isNaN(min) && !isNaN(max)) {
-          filteredTransactions = filteredTransactions.filter(t => t.amount >= min && t.amount <= max);
-        }
-      }
-    }
+
+  // Recurring Filter (Show *only* recurring)
+  if (filters.showRecurringOnly) {
+      filteredTransactions = filteredTransactions.filter(t => t.isRecurring);
   }
 
   return filteredTransactions;
@@ -69,21 +57,20 @@ const filterTransactions = (transactions, selectedAccountIds, filters) => {
 
 export default function TransactionsManager({ accounts, allTransactions, setAllTransactions, selectedAccountIds }) {
   const [modalOpen, setModalOpen] = useState(false);
-  const [form, setForm] = useState({ date: "", desc: "", amount: "", tags: "", accountId: "" });
-  // NEW: Filter state
+  const [form, setForm] = useState({ date: "", desc: "", amount: "", tags: "", accountId: "", isRecurring: false, frequency: 'monthly', endDate: "" });
+  // NEW: Separate Filter States:  showRecurringOnly
   const [filters, setFilters] = useState({
     startDate: "",
     endDate: "",
     tags: [],
     description: "",
     amount: "",
-    amountOperator: "gt", // Set initial operator to "greater than"
+    amountOperator: "gt",
+    showRecurringOnly: false, // Default to show everything, change the default showRecurring to be true in the old code
   });
-
 
   // Memoize filtered transactions
   const transactions = useMemo(() => {
-    // console.log("Filtering transactions with", selectedAccountIds, filters);
     return filterTransactions(allTransactions, selectedAccountIds, filters);
   }, [allTransactions, selectedAccountIds, filters]);
 
@@ -93,7 +80,10 @@ export default function TransactionsManager({ accounts, allTransactions, setAllT
       desc: "",
       amount: "",
       tags: "",
-      accountId: selectedAccountIds.length > 0 ? selectedAccountIds[0] : accounts[0]?.id || ""
+      accountId: selectedAccountIds.length > 0 ? selectedAccountIds[0] : accounts[0]?.id || "",
+      isRecurring: false, // Default to not recurring
+      frequency: 'monthly',
+      endDate: ""
     });
     setModalOpen(true);
   }
@@ -111,7 +101,10 @@ export default function TransactionsManager({ accounts, allTransactions, setAllT
       desc: form.desc,
       amount: Number(form.amount),
       tags: parseTags(form.tags),
-      accountId: form.accountId
+      accountId: form.accountId,
+      isRecurring: form.isRecurring,
+      frequency: form.frequency,
+      endDate: form.endDate,
     };
     setAllTransactions([tx, ...allTransactions]);
     setModalOpen(false);
@@ -138,7 +131,7 @@ export default function TransactionsManager({ accounts, allTransactions, setAllT
       {/* Transaction Filter Form */}
       <div className="card mb-4">
         <h3 className="text-lg font-medium mb-2">Filter Transactions</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
 
           {/* Date Range */}
           <div>
@@ -160,14 +153,14 @@ export default function TransactionsManager({ accounts, allTransactions, setAllT
             />
           </div>
 
-          {/* Tags: Add tag filter when you have a way to determine possible values or budgets/categories*/}
+          {/* Tags */}
           <div>
-            <label className="block text-sm muted mb-1">Tags</label>
+            <label className="block text-sm muted mb-1">Tags (comma separated)</label>
             <input
               type="text"
               className="form-input w-full"
               placeholder="e.g., food, groceries"
-              value={filters.tags.join(',')} // Display comma-separated
+              value={filters.tags.join(',')}
               onChange={(e) => {
                 const tagsArray = e.target.value ? parseTags(e.target.value) : [];
                 setFilters({ ...filters, tags: tagsArray });
@@ -187,27 +180,15 @@ export default function TransactionsManager({ accounts, allTransactions, setAllT
             />
           </div>
 
-          {/* Amount Filtering */}
-          <div className="col-span-1 md:col-span-2 lg:col-span-1">
-              <label className="block text-sm muted mb-1">Amount</label>
-              <div className="flex gap-2">
-                  <select
-                      className="form-select w-24"
-                      value={filters.amountOperator}
-                      onChange={(e) => setFilters({ ...filters, amountOperator: e.target.value })}
-                  >
-                      <option value="gt"> &gt; </option>
-                      <option value="lt"> &lt; </option>
-                      <option value="between"> Between </option>
-                  </select>
-                  <input
-                      type="number"
-                      className="form-input w-full"
-                      value={filters.amount}
-                      onChange={(e) => setFilters({ ...filters, amount: e.target.value })}
-                      placeholder="Amount"
-                  />
-              </div>
+           {/* Recurring Filter */}
+           <div className="col-span-1 flex items-center">
+              <input
+                  type="checkbox"
+                  className="form-checkbox mr-2"
+                  checked={filters.showRecurringOnly} // Now showRecurringOnly
+                  onChange={(e) => setFilters({ ...filters, showRecurringOnly: e.target.checked })}
+              />
+              <label className="text-sm muted">Show Recurring Only</label>
           </div>
         </div>
       </div>
@@ -238,6 +219,7 @@ export default function TransactionsManager({ accounts, allTransactions, setAllT
               <div className="font-medium">{t.desc}</div>
               <div className="text-xs muted">
                 {t.date} • {t.tags.join(", ") || "-"} • {accounts.find(a => a.id === t.accountId)?.name || "—"}
+                {t.isRecurring && <span style={{ color: 'var(--accent)' }}> (Recurring)</span>} {/* Indicator */}
               </div>
             </div>
 
@@ -276,13 +258,55 @@ export default function TransactionsManager({ accounts, allTransactions, setAllT
             </div>
           </div>
 
+          {/* Recurring Transaction Options */}
+          <div className="mt-3">
+              <label className="inline-flex items-center">
+                  <input
+                      type="checkbox"
+                      className="form-checkbox"
+                      checked={form.isRecurring}
+                      onChange={(e) => setForm({ ...form, isRecurring: e.target.checked })}
+                  />
+                  <span className="ml-2 text-sm">Make this recurring</span>
+              </label>
+          </div>
+          {form.isRecurring && (
+              <div className="grid md:grid-cols-2 gap-2 mt-2">
+                  <div>
+                      <label className="text-sm block mb-1">Frequency</label>
+                      <select
+                          className="form-select w-full"
+                          value={form.frequency}
+                          onChange={(e) => setForm({ ...form, frequency: e.target.value })}
+                      >
+                          <option value="monthly">Monthly</option>
+                          <option value="weekly">Weekly</option>
+                          <option value="bi-weekly">Bi-Weekly</option>
+                          <option value="quarterly">Quarterly</option>
+                          <option value="annually">Annually</option>
+                      </select>
+                  </div>
+
+                  <div>
+                      <label className="text-sm block mb-1">End Date (Optional)</label>
+                      <input
+                          type="date"
+                          className="form-input w-full"
+                          value={form.endDate}
+                          onChange={(e) => setForm({ ...form, endDate: e.target.value })}
+                      />
+                  </div>
+              </div>
+          )}
+
+
           <div>
             <label className="text-sm block mb-1">Tags (comma separated)</label>
             <input className="form-input w-full" value={form.tags} onChange={e=>setForm({...form, tags:e.target.value})} />
           </div>
 
           <div className="flex justify-end gap-2">
-            <button type="button" className="bg-gray-200 px-4 py-2 rounded" onClick={()=>setModalOpen(false)}>Cancel</button>
+            <button type="button" className="btn btn-neutral-outline" onClick={() => setModalOpen(false)}>Cancel</button>
             <button type="submit" className="btn btn-primary">Add transaction</button>
           </div>
         </form>
