@@ -67,22 +67,10 @@ export default function Sidebar() {
             <span className="icon"><FiBarChart2 /></span>
             <span className="label">Budgets</span>
           </a>
-
-          <a className="nav-link mt-1" href="/mockups">
-            <span className="icon"><FiPieChart /></span>
-            <span className="label">Mockups</span>
-          </a>
-
-          <a className="nav-link mt-1" href="/meetings">
-            <span className="icon"><FiFileText /></span>
-            <span className="label">Meetings</span>
-          </a>
         </nav>
 
         <div className="mt-auto px-3 pb-4">
           <a className="nav-link" href="#" onClick={(e)=>{ e.preventDefault(); alert('Logout placeholder'); }}>
-            <span className="icon"><FiLogOut /></span>
-            <span className="label">Logout</span>
           </a>
         </div>
       </aside>
